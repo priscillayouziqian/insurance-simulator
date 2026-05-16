@@ -2,7 +2,21 @@
 
 A full-stack web application simulating a real-world corporate health insurance enrollment workflow. This project demonstrates core full-stack development skills including RESTful API design, database state management, and business rules validation.
 
-## 🚀 Features
+## 📸 Visual Overview
+
+### 1. Employee Portal (User Interface)
+*A simple, user-friendly interface for employees to select their health plans and submit applications safely.*
+![Employee Portal](./assets/employee-portal.png)
+
+### 2. HR Admin Dashboard (Management Interface)
+*A dedicated dashboard where HR administrators can easily view all applications and instantly `Approve` or `Reject` them with one click.*
+!HR Admin Dashboard
+
+### 3. Database State (Backend Data)
+*The system safely and accurately records all transitions and states (PENDING, APPROVED, REJECTED) in a robust PostgreSQL database.*
+!Database View
+
+## � Features
 
 - **Employee Portal**: Employees can seamlessly submit their health insurance enrollment applications.
 - **Business Rules Engine (Backend)**: 
