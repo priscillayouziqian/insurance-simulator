@@ -1,0 +1,31 @@
+name: CI Pipeline
+
+# 触发条件：当代码 Push 到主分支，或者有针对主分支的 Pull Request 时触发
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    # 指定在一台最新版的 Ubuntu 虚拟服务器上运行
+    runs-on: ubuntu-latest
+
+    steps:
+    # 第 1 步：把你的代码下载到这台虚拟服务器上
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    # 第 2 步：在这台服务器上安装 Node.js (使用我们在 README 中推荐的 v18)
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    # 第 3 步：进入后端目录，安装依赖并运行我们的 Jest 单元测试
+    - name: Install dependencies and run tests
+      run: |
+        cd backend
+        npm install
+        npx jest
