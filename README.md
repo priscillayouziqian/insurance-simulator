@@ -32,6 +32,14 @@ A full-stack web application simulating a real-world corporate health insurance 
 - **Backend**: Node.js, Express.js
 - **Database**: PostgreSQL (with `pg` driver)
 
+## 🧠 What I Learned (Architecture Refactoring)
+
+I successfully transitioned this project from a basic MVP into a scalable, enterprise-grade application by applying core software engineering principles:
+- **Frontend Modularization**: Extracted React components, pages, and centralized API services to achieve clean UI rendering and easy maintenance.
+- **Seamless Routing**: Integrated `react-router-dom` to replace state-based views with a true single-page application (SPA) experience.
+- **Backend MVC Pattern**: Decoupled the Node.js backend into Routes, Controllers, and Services, strictly separating business logic from HTTP requests.
+- **Centralized Error Handling**: Built global Express middleware to catch and format API errors consistently, eliminating repetitive code and ensuring a predictable user experience.
+
 ## 📦 Getting Started
 
 ### Prerequisites
