@@ -4,6 +4,7 @@ const cors = require('cors');
 
 // Import our new routes
 const enrollmentRoutes = require('./routes/enrollmentRoutes');
+const claimRoutes = require('./routes/claimRoutes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
@@ -27,6 +28,7 @@ app.get('/api/health', (req, res) => {
 // Mount the routes!
 // Any request starting with '/api' will be handled by enrollmentRoutes
 app.use('/api', enrollmentRoutes);
+app.use('/api/claims', claimRoutes);
 
 // Global Error Handling Middleware
 // Must be mounted AFTER all routes to catch their errors

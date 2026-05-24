@@ -33,6 +33,40 @@ const createTables = async () => {
             ON CONFLICT (email) DO NOTHING;
         `);
 
+        // 4. create claims table
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS claims (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER REFERENCES company_users(id),
+                policy_number VARCHAR(50) NOT NULL,
+                status VARCHAR(50) DEFAULT 'PENDING',
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
+        // 5. create claim_items table
+        // ON DELETE CASCADE ensures if a claim is deleted, its items are too
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS claim_items (
+                id SERIAL PRIMARY KEY,
+                claim_id INTEGER REFERENCES claims(id) ON DELETE CASCADE,
+                description VARCHAR(255) NOT NULL,
+                amount DECIMAL(10, 2) NOT NULL
+            );
+        `);
+
+        // 6. create claim_status_history table to track status changes over time
+        await db.query(`
+            CREATE TABLE IF NOT EXISTS claim_status_history (
+                id SERIAL PRIMARY KEY,
+                claim_id INTEGER REFERENCES claims(id) ON DELETE CASCADE,
+                old_status VARCHAR(50),
+                new_status VARCHAR(50) NOT NULL,
+                note TEXT,
+                changed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+        `);
+
         console.log("✅ Database tables created successfully, test data inserted!");
     } catch (err) {
         console.error("❌ Database initialization failed:", err);
