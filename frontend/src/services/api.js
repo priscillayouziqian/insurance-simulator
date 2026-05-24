@@ -37,5 +37,42 @@ export const apiService = {
     
     if (!response.ok) throw new Error('Failed to update status');
     return response.json();
+  },
+
+  // ==========================================
+  // Claims API (Day 1 Advanced)
+  // ==========================================
+
+  // User: Submit a new claim
+  async submitClaim(data) {
+    const response = await fetch(`${BASE_URL}/claims`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    
+    const responseData = await response.json();
+    if (!response.ok) {
+      throw new Error(responseData.error || 'Failed to submit claim');
+    }
+    return responseData;
+  },
+
+  // Admin: Get all claims
+  async getAllClaims() {
+    const response = await fetch(`${BASE_URL}/claims`);
+    if (!response.ok) throw new Error('Failed to fetch claims');
+    return response.json();
+  },
+
+  // Admin: Update claim status
+  async updateClaimStatus(id, status, note) {
+    const response = await fetch(`${BASE_URL}/claims/${id}/status`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status, note })
+    });
+    if (!response.ok) throw new Error('Failed to update claim status');
+    return response.json();
   }
 };
