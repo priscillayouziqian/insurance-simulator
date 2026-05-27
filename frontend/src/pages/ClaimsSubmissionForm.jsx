@@ -65,8 +65,18 @@ export default function ClaimsSubmissionForm() {
       <h2>Submit a Health Insurance Claim</h2>
       <p style={{ color: '#666', marginBottom: '20px' }}>Fill out your policy details and add your claim items below.</p>
 
-      {message && <div className="success-message">{message}</div>}
-      {error && <div className="error-message">{error}</div>}
+      {/* Success Message (Green) */}
+      {message && (
+        <div style={{ padding: '12px', backgroundColor: '#d4edda', color: '#155724', border: '1px solid #c3e6cb', borderRadius: '5px', marginBottom: '20px', fontWeight: 'bold' }}>
+          ✅ {message}
+        </div>
+      )}
+      {/* Error Message (Red) */}
+      {error && (
+        <div style={{ padding: '12px', backgroundColor: '#f8d7da', color: '#721c24', border: '1px solid #f5c6cb', borderRadius: '5px', marginBottom: '20px', fontWeight: 'bold' }}>
+          ❌ {error}
+        </div>
+      )}
 
       <form onSubmit={handleSubmit}>
         <div className="form-group">

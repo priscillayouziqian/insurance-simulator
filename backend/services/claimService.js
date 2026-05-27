@@ -12,6 +12,41 @@ const claimService = {
         }
         const userId = userResult.rows[0].id;
 
+        // ==========================================
+        // Advanced Business Rules
+        // ==========================================
+        
+        // Rule 1: Active Coverage Check (Must have APPROVED enrollment)
+        const enrollmentResult = await db.query(
+            'SELECT plan_type, status FROM enrollments WHERE user_id = $1',
+            [userId]
+        );
+        if (enrollmentResult.rows.length === 0 || enrollmentResult.rows[0].status !== 'APPROVED') {
+            const error = new Error('Eligibility failed: User does not have an active (APPROVED) insurance policy.');
+            error.statusCode = 403;
+            throw error;
+        }
+        const planType = enrollmentResult.rows[0].plan_type;
+
+        // Rule 2: Claim Limit Check (Basic: $1000, Premium: $3000)
+        const newClaimTotal = items.reduce((sum, item) => sum + Number(item.amount), 0);
+        
+        const historyResult = await db.query(`
+            SELECT COALESCE(SUM(ci.amount), 0) as total_consumed
+            FROM claim_items ci
+            JOIN claims c ON ci.claim_id = c.id
+            WHERE c.user_id = $1 AND c.status != 'REJECTED'
+        `, [userId]);
+        const historicalConsumed = Number(historyResult.rows[0].total_consumed);
+
+        const annualLimit = planType === 'Premium Health' ? 3000 : 1000;
+        if (historicalConsumed + newClaimTotal > annualLimit) {
+            const error = new Error(`Limit exceeded: Your plan (${planType}) has a limit of $${annualLimit}. You have consumed $${historicalConsumed}, and this claim is $${newClaimTotal}.`);
+            error.statusCode = 400;
+            throw error;
+        }
+        // ==========================================
+
         // Check out a dedicated client from the connection pool for our transaction
         const client = await db.pool.connect();
         try {
@@ -54,9 +89,14 @@ const claimService = {
     // 2. Get all claims for the admin dashboard
     async getAllClaims() {
         const result = await db.query(`
-            SELECT c.*, u.name as user_name, u.email as user_email
+            SELECT 
+                c.*, u.name as user_name, u.email as user_email,
+                COALESCE(SUM(ci.amount), 0) as total_amount,
+                json_agg(json_build_object('desc', ci.description, 'amt', ci.amount)) as items
             FROM claims c
             JOIN company_users u ON c.user_id = u.id
+            LEFT JOIN claim_items ci ON c.id = ci.claim_id
+            GROUP BY c.id, u.name, u.email
             ORDER BY c.created_at DESC
         `);
         return result.rows;
@@ -121,6 +161,31 @@ const claimService = {
     async getClaimsByUser(userId) {
         const result = await db.query('SELECT * FROM claims WHERE user_id = $1 ORDER BY created_at DESC', [userId]);
         return result.rows;
+    },
+
+    // 6. Get claim statistics (Admin Dashboard)
+    async getClaimStats() {
+        // Count different statuses
+        const result = await db.query(`
+            SELECT 
+                COUNT(*) as total_claims,
+                COUNT(CASE WHEN status = 'PENDING' THEN 1 END) as pending_claims,
+                COUNT(CASE WHEN status = 'APPROVED' THEN 1 END) as approved_claims
+            FROM claims
+        `);
+        // Calculate total amount paid for approved claims
+        const amountResult = await db.query(`
+            SELECT COALESCE(SUM(ci.amount), 0) as total_paid
+            FROM claim_items ci
+            JOIN claims c ON ci.claim_id = c.id
+            WHERE c.status = 'APPROVED'
+        `);
+        return {
+            total_claims: Number(result.rows[0].total_claims),
+            pending_claims: Number(result.rows[0].pending_claims),
+            approved_claims: Number(result.rows[0].approved_claims),
+            total_paid: Number(amountResult.rows[0].total_paid)
+        };
     }
 };
 

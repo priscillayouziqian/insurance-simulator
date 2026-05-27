@@ -64,6 +64,13 @@ export const apiService = {
     if (!response.ok) throw new Error('Failed to fetch claims');
     return response.json();
   },
+  
+  // Admin: Get claim statistics
+  async getClaimStats() {
+    const response = await fetch(`${BASE_URL}/claims/stats`);
+    if (!response.ok) throw new Error('Failed to fetch claim stats');
+    return response.json();
+  },
 
   // Admin: Update claim status
   async updateClaimStatus(id, status, note) {
