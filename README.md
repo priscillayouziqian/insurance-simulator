@@ -26,6 +26,18 @@ A full-stack web application simulating a real-world corporate health insurance 
 - **Admin Dashboard**: HR/Admins can view all pending applications and instantly `Approve` or `Reject` them via state transitions.
 - **Full-Stack Integration**: Reliable communication between the React frontend and PostgreSQL database.
 
+## 🚀 Advanced Module: Claims Processing System
+
+Built on top of the MVP, this update introduces a robust **Reimbursement Claims System**, focusing on enterprise-level data integrity and complex business logic:
+- **Database Transactions (ACID)**: Ensures atomic saves for multi-table records (Claims, Items, and History) with rollback support to prevent orphan data.
+- **State Machine Workflow**: Automated tracking of claim statuses (PENDING -> APPROVED/REJECTED) with full audit history.
+- **Advanced Business Rules**: Strict validations for active policies and historical consumption against annual limits ($1000 Basic / $3000 Premium).
+- **KPI Data Aggregation**: Utilizes advanced PostgreSQL functions (`GROUP BY`, `SUM()`, `json_agg`) to drive a real-time analytics dashboard.
+
+*Claims Management Dashboard:*
+![Submit Claims](./assets/submit-claims.png)
+![claims-dashboard](./assets/claims-dashboard.png)
+
 ## 🛠️ Tech Stack
 
 - **Frontend**: React (Vite)
