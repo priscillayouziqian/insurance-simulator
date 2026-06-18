@@ -38,11 +38,35 @@ Built on top of the MVP, this update introduces a robust **Reimbursement Claims 
 ![Submit Claims](./assets/submit-claims.png)
 ![claims-dashboard](./assets/claims-dashboard.png)
 
+## 🤖 AI Module: Plain-Language Explainer
+
+Insurance decisions are full of jargon — status codes, `REJECTED` states, annual
+limits. This module uses the **Claude API** to turn any rejection into a clear,
+empathetic explanation plus concrete next steps, so a non-expert employee
+understands *why* and *what to do next*.
+
+When an enrollment is rejected, the employee can click **"Explain this in plain
+language"** and get a human answer instead of an error code.
+
+![AI plain-language explanation](./docs/claude-integration/images/05-ui-explanation.png)
+
+**How it's built:**
+- **Server-side only** — the Claude API key lives in `backend/.env`, never in the browser.
+- **Structured outputs** — the model returns a fixed `{ explanation, nextSteps }` shape.
+- **Guardrails** — the prompt forbids jargon and inventing facts (no made-up amounts or dates).
+- **Evaluated, not assumed** — an automated harness (`backend/evals/explainer.eval.js`)
+  checks each response against rules (no jargon, grounded numbers, has next steps)
+  plus an LLM judge, and fails if quality drops.
+
+📖 Full step-by-step write-up for non-technical readers:
+[`docs/claude-integration/`](./docs/claude-integration/00-overview.md)
+
 ## 🛠️ Tech Stack
 
 - **Frontend**: React (Vite)
 - **Backend**: Node.js, Express.js
 - **Database**: PostgreSQL (with `pg` driver)
+- **AI**: Claude API via the official Anthropic SDK (`claude-opus-4-8`)
 
 ## 🧠 What I Learned (Architecture Refactoring)
 
@@ -79,6 +103,7 @@ DB_HOST=localhost
 DB_PORT=5432
 DB_NAME=insurance_simulator
 PORT=3000
+ANTHROPIC_API_KEY=your_anthropic_api_key
 ```
 
 ### 3. Start the Backend Server
@@ -104,3 +129,4 @@ The web application will open at `http://localhost:5173`.
 2. **Test Age Validation**: Try enrolling with `bob@company.com` (Minor, throws a 403 error).
 3. **Test Unknown User**: Try enrolling with a random email (throws a 404 error).
 4. **Admin Approval**: Switch to the **Admin Dashboard** via the top navigation bar to approve or reject pending requests.
+5. **Try the AI Explainer**: After any rejection (e.g. `bob@company.com`), click **"Explain this in plain language"** to see a plain-language explanation and next steps.
