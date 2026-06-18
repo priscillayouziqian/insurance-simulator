@@ -40,7 +40,7 @@ sees it.
 | 2 | [02-explainer-service.md](02-explainer-service.md) | The core service that calls Claude | ✅ Done |
 | 3 | [03-http-endpoint.md](03-http-endpoint.md) | HTTP endpoint (`POST /api/explain`) | ✅ Done |
 | 4 | [04-eval-harness.md](04-eval-harness.md) | Evaluation harness (quality checks) | ✅ Done |
-| 5 | _coming_ | Frontend button to show explanations | ⏳ Next |
+| 5 | [05-frontend-ui.md](05-frontend-ui.md) | Frontend button to show explanations | ✅ Done |
 
 ## Tech used
 

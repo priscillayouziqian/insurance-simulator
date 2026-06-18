@@ -20,6 +20,21 @@ export const apiService = {
     return responseData;
   },
 
+  // User: Get a plain-language explanation of a situation
+  async explainSituation(data) {
+    const response = await fetch(`${BASE_URL}/explain`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+
+    const responseData = await response.json();
+    if (!response.ok) {
+      throw new Error(responseData.error || 'Failed to get explanation');
+    }
+    return responseData;
+  },
+
   // Admin: Get all enrollments
   async getEnrollments() {
     const response = await fetch(`${BASE_URL}/enrollments`);
