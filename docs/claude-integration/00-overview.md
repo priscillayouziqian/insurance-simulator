@@ -39,8 +39,8 @@ sees it.
 | 1 | [01-setup-and-sdk.md](01-setup-and-sdk.md) | Install the Claude SDK + add the API key | ✅ Done |
 | 2 | [02-explainer-service.md](02-explainer-service.md) | The core service that calls Claude | ✅ Done |
 | 3 | [03-http-endpoint.md](03-http-endpoint.md) | HTTP endpoint (`POST /api/explain`) | ✅ Done |
-| 4 | _coming_ | Evaluation harness (quality checks) | ⏳ Next |
-| 5 | _coming_ | Frontend button to show explanations | ⏳ Planned |
+| 4 | [04-eval-harness.md](04-eval-harness.md) | Evaluation harness (quality checks) | ✅ Done |
+| 5 | _coming_ | Frontend button to show explanations | ⏳ Next |
 
 ## Tech used
 
